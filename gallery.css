@@ -1,0 +1,65 @@
+
+.progressive-images {
+
+}
+
+.progressive-images figure {
+    cursor: pointer;
+}
+
+.progressive-images figure .overlay {
+    background: rgba(0, 0, 0, 0.5);
+    bottom: 0;
+    display: none;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 45px;
+    z-index: 2;
+}
+
+.progressive-images figure img {
+    z-index: 1;
+}
+
+.progressive-images figure i.button {
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    font-size: 25px;
+    opacity: 0;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 1;
+}
+.progressive-images figure i.button:hover {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* the button positions */
+.progressive-images figure i.fas.button1 {
+    top: 10px;
+}
+.progressive-images figure i.fas.button2 {
+    top: 45px;
+}
+.progressive-images figure i.fas.button3 {
+    top: 80px;
+}
+.progressive-images figure i.fas.button4 {
+    top: 115px;
+}
+.progressive-images figure i.fas.button5 {
+    top: 150px;
+}
+
+.progressive-images figure.hover .overlay {
+    display: block;
+}
+
+.progressive-images figure.hover i.button {
+    opacity: 1;
+    z-index: 3;
+}
+
