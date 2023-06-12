@@ -187,7 +187,7 @@
    *
    * @param {array} imageData - An array of metadata about each image to
    *                            include in the grid.
-   * @param {string} imageData[0].filename - The filename of the image.
+   * @param {string} imageData[0].photodata - The photodata of the image.
    * @param {string} imageData[0].aspectRatio - The aspect ratio of the image.
    * @param {object} options - An object containing overrides for the default
    *                           options. See below for the full list of options
@@ -286,22 +286,22 @@
       thumbnailSize: 20,
 
       /**
-       * Get the URL for an image with the given filename & size.
+       * Get the URL for an image with the given photodata & size.
        *
-       * @param {string} filename - The filename of the image.
+       * @param {string} photodata - The photodata of the image.
        * @param {Number} size - The size (height in pixels) of the image.
        *
        * @returns {string} The URL of the image at the given size.
        */
-      urlForSize: function(filename, size) {
-        return '/img/' + size.toString(10) + '/' + filename;
+      urlForSize: function(photodata, size) {
+        return '/img/' + size.toString(10) + '/' + photodata;
       },
 
       /**
-       * Get a callback with the filename of the image
+       * Get a callback with the info of the image
        * where the mouse started hovering.
        *
-       * @param {string} filename - The filename property of the image. Each event is the name of the event and the function, for example: 'click': function() {}
+       * @param {string} info - The info property of the image. Each event is the name of the event and the function, for example: 'click': function() {}
        */
       eventHandlers: {
         click: function(elem, info) { console.log('Clicked') },
@@ -315,24 +315,24 @@
        * @param {object} button - The object of the button. Each button has an Fontawesome 5 icon and an onclick function defined as: "icon" and "action"
        */
       actionButtons: [
-        {
-          icon: 'fas fa-download',
-          action: function(elem, image) {
-            alert('tried to download image');
-          }
-        }
-        ,{
-          icon: 'fas fa-info-circle',
-          action: function(elem, image) {
-            alert('tried to get info');
-          }
-        }
-        ,{
-          icon: 'fas fa-trash',
-          action: function (elem, image) {
-            alert('tried to trash image');
-          }
-        }
+        // {
+        //   icon: 'fas fa-download',
+        //   action: function(elem, image) {
+        //     alert('tried to download image');
+        //   }
+        // }
+        // ,{
+        //   icon: 'fas fa-info-circle',
+        //   action: function(elem, image) {
+        //     alert('tried to get info');
+        //   }
+        // }
+        // ,{
+        //   icon: 'fas fa-trash',
+        //   action: function (elem, image) {
+        //     alert('tried to trash image');
+        //   }
+        // }
       ],
 
       /**
@@ -372,12 +372,12 @@
        * @returns {Number} The size (height in pixels) of the images to load.
        */
       getImageSize: function(lastWindowWidth) {
-        if (lastWindowWidth <= 640) {
-          return 100;
-        } else if (lastWindowWidth <= 1920) {
-          return 250;
-        }
-        return 500;
+        // if (lastWindowWidth <= 640) {
+        //   return 100;
+        // } else if (lastWindowWidth <= 1920) {
+        //   return 250;
+        // }
+        return 250;
       }
     };
 
@@ -459,7 +459,7 @@
    *
    * @param {array} imageData - An array of metadata about each image to
    *                            include in the grid.
-   * @param {string} imageData[0].filename - The filename of the image.
+   * @param {string} imageData[0].photodata - The photodata of the image.
    * @param {string} imageData[0].aspectRatio - The aspect ratio of the image.
    *
    * @returns {Array[ProgressiveImage]} - An array of ProgressiveImage
@@ -790,7 +790,7 @@
    *
    * @param {array} singleImageData - An array of metadata about each image to
    *                                  include in the grid.
-   * @param {string} singleImageData[0].filename - The filename of the image.
+   * @param {string} singleImageData[0].photodata - The photodata of the image.
    * @param {string} singleImageData[0].aspectRatio - The aspect ratio of the
    *                                                  image.
    * @param {number} index - Index of the image in the list of images
@@ -804,8 +804,8 @@
     this.existsOnPage = false; // True if the element exists on the page.
 
     // Instance information
-    this.aspectRatio = singleImageData.aspectRatio;  // Aspect Ratio
-    this.filename = singleImageData.filename;  // Filename
+    this.aspectRatio = singleImageData.data.aspectRatio;  // Aspect Ratio
+    this.photodata = singleImageData;  // photodata
     this.index = index;  // The index in the list of images
 
     // The Pig instance
@@ -849,7 +849,7 @@
       // Show thumbnail
       if (!this.thumbnail) {
         this.thumbnail = new Image();
-        this.thumbnail.src = this.pig.settings.urlForSize(this.filename, this.pig.settings.thumbnailSize);
+        this.thumbnail.src = this.pig.settings.urlForSize(this.photodata, this.pig.settings.thumbnailSize);
         this.thumbnail.className = this.classNames.thumbnail;
         this.thumbnail.onload = function() {
 
@@ -866,7 +866,7 @@
       // Show full image
       if (!this.fullImage) {
         this.fullImage = new Image();
-        this.fullImage.src = this.pig.settings.urlForSize(this.filename, this.pig.settings.getImageSize(this.pig.lastWindowWidth));
+        this.fullImage.src = this.pig.settings.urlForSize(this.photodata, this.pig.settings.getImageSize(this.pig.lastWindowWidth));
         this.fullImage.onload = function() {
 
           // We have to make sure fullImage still exists, we may have already been
@@ -923,10 +923,11 @@
       this.element = document.createElement(this.pig.settings.figureTagName);
       this.element.className = this.classNames.figure;
 
-      let overlay = document.createElement('div');
-      overlay.className = 'overlay';
-
-      this.element.appendChild(overlay);
+      // Show an overlay element over each image
+      // let overlay = document.createElement('div');
+      // overlay.className = 'overlay';
+      //
+      // this.element.appendChild(overlay);
 
       // Handle all events
       if (Object.keys(this.pig.settings.eventHandlers).length > 0) {
@@ -934,7 +935,7 @@
         {
           let func = this.pig.settings.eventHandlers[event];
 
-          this.element.addEventListener(event, func.bind(this, this.element, this.filename));
+          this.element.addEventListener(event, func.bind(this, this.element, this.photodata));
         }
       }
 
@@ -947,7 +948,7 @@
           let buttonElem = document.createElement('i');
           buttonElem.className = 'button button' + buttonNum++ + ' ' + button.icon;
           buttonElem.addEventListener('click', function(event) {
-            button.action(this.element, this.filename);
+            button.action(this.element, this.photodata);
             event.stopPropagation();
           }.bind(this));
           this.element.appendChild(buttonElem);
